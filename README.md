@@ -1,2 +1,7 @@
 # materialui-react-starter
-A starter sample for materialui.com
+
+This is a starter template that includes some real world dependencies such as -
+* react-router
+* redux
+
+
