@@ -1,19 +1,32 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { PureComponent } from 'react';
+import { Router, browserHistory } from 'react-router';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import thunk from 'redux-thunk';
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
-class App extends Component {
+import routes from './routes';
+import * as reducers from './reducers';
+
+const reducer = combineReducers({
+  ...reducers,
+  routing: routerReducer,
+});
+
+const store = createStore(reducer, applyMiddleware(thunk));
+const history = syncHistoryWithStore(browserHistory, store);
+
+class App extends PureComponent {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
+        <Provider store={store}>
+          <Router history={history} routes={routes} />
+        </Provider>
+      </MuiThemeProvider>
     );
   }
 }
